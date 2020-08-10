@@ -1,0 +1,207 @@
+.row {
+  margin-top: 80px;
+}
+
+/*Style table*/
+table {
+  margin-top: 3rem;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+th {
+  font-weight: 400;
+  font-size: 110%;
+  color: #10A700;
+  text-align: center;
+}
+
+th, td {
+  border-bottom: 1px solid #808080;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Set styles of a table for small screens */
+@media only screen and (max-width: 767px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  th {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    padding: 6px;
+  }
+
+  td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    padding-top: 6px;
+    padding-right: 6px;
+    padding-bottom: 6px;
+  }
+
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  td:nth-of-type(8):before {
+    padding-top: 15px;
+  }
+
+  td:nth-of-type(9):before {
+    padding-top: 10px;
+  }
+
+  td:nth-of-type(2):before { content: "First Name" }
+  td:nth-of-type(3):before { content: "Last Name" }
+  td:nth-of-type(4):before { content: "Date From" }
+  td:nth-of-type(5):before { content: "Date To" }
+  td:nth-of-type(6):before { content: "Number of People" }
+  td:nth-of-type(7):before { content: "Number of Rooms" }
+  td:nth-of-type(8):before { content: "Edit" }
+  td:nth-of-type(9):before { content: "Delete" }
+}
+
+/*Set style for search input fields*/
+input {
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+
+input:focus {
+  background-color: #14D200;
+  outline: none;
+  border: 2px solid #14D200;
+  color: #ffffff;
+  transition: background-color 0.3s, border 0.3s, color 0.3s;
+}
+
+input:focus::placeholder {
+  color: #ffffff;
+  transition: color 0.3s;
+}
+
+.icon-group-1,
+.icon-group-2,
+.icon-group-3,
+.icon-group-4 {
+  position: relative;
+}
+
+.icon-group-1 .glyphicon,
+.icon-group-2 .glyphicon,
+.icon-group-3 .glyphicon,
+.icon-group-4 .glyphicon {
+  position: absolute;
+  top: 13px;
+  left: 2px;
+  color: #808080;
+}
+
+input:focus + .glyphicon,
+input:focus + .glyphicon,
+input:focus + .glyphicon,
+input:focus + .glyphicon {
+  color: #ffffff;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Overwrite styles for pagination elements */
+.custom-pagination /deep/ .ngx-pagination .current {
+  background: #10A700;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: default;
+}
+
+.custom-pagination /deep/ .ngx-pagination a {
+  color: #616060;
+}
+
+.custom-pagination /deep/ .ngx-pagination a:hover {
+  text-decoration: none;
+  background: #14D200;
+  color: #ffffff;
+}
+
+.custom-pagination /deep/ .ngx-pagination a:focus {
+  outline: none;
+  text-decoration: none;
+  background: #10A700;
+  color: #ffffff;
+}
+
+.custom-pagination /deep/ .ngx-pagination a:active {
+  outline: none;
+  text-decoration: none;
+  background: #10A700;
+  color: #ffffff;
+}
+
+/* Style edit and delete buttons */
+.edit, .delete {
+  padding: 10px;
+  border-radius: 10%;
+  color: #ffffff;
+}
+
+.edit {
+  background-color: #009E93;
+  border: 2px solid #009E93;
+}
+
+.edit:hover, .edit:focus {
+  background-color: #007D74;
+  border-color: #007D74;
+}
+
+.delete {
+  background-color: #FB000D;
+  border: 2px solid #FB000D;
+}
+
+.delete:hover, .delete:focus {
+  background-color: #C8000A;
+  border-color: #C8000A;
+}
+
+.edit:hover, .delete:hover, .edit:focus, .delete:focus {
+  outline: none;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Style paragraph for displaying messages */
+.message {
+  text-align: center;
+  color: #10A700;
+  background-color: #FFD136;
+  margin-bottom: 10px;
+  padding: 15px;
+  border: 1px solid #FFD136;
+  border-radius: 2%;
+}
+
+
+

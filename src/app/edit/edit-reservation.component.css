@@ -1,0 +1,103 @@
+/* Style form and input fields */
+form {
+  margin-top: 80px;
+}
+
+input {
+  border: 1px solid #CC5900;
+  color: #757373;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #FF6F00;
+  background-color: #FF6F00;
+  color: #ffffff;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+input.ng-touched.ng-invalid {
+  border: 2px solid #9F0008;
+}
+
+/* Style buttons */
+.edit, .cancel {
+  padding: 10px;
+  border-radius: 6%;
+  width: 100%;
+  color: #ffffff;
+}
+
+.edit:hover, .cancel:hover {
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.edit:focus, .cancel:focus {
+  outline: none;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.edit {
+  border: 1px solid #FF6F00;
+  background-color: #FF6F00;
+}
+
+.edit:hover {
+  border: 1px solid #14D200;
+  background-color: #14D200;
+}
+
+.edit:focus {
+  border: 1px solid #10A700;
+  background-color: #10A700;
+}
+
+.edit:disabled {
+  cursor: not-allowed;
+  background-color: #FF6F00;
+  color: #ffffff;
+  border: none;
+}
+
+.cancel {
+  color: #ffffff;
+  border: 1px solid #FB000D;
+  background-color: #FB000D;
+  cursor: pointer;
+}
+
+.cancel:hover {
+  border: 1px solid #C8000A ;
+  background-color: #C8000A ;
+}
+
+.cancel:focus {
+  border: 1px solid #720006;
+  background-color: #720006;
+}
+
+/* Style label and help block*/
+label {
+  font-weight: 400;
+}
+
+.help-block {
+  color: #9F0008;
+}
+
+p {
+  text-align: center;
+  margin: 0;
+}
+
+/* Style paragraph for displaying messages */
+.message {
+  color: #10A700;
+  background-color: #FFD136;
+  margin-bottom: 10px;
+  padding: 15px;
+  border: 1px solid #FFD136;
+  border-radius: 2%;
+}
+
+

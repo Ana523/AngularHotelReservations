@@ -1,0 +1,61 @@
+/* Style form and input fields */
+form {
+    margin-top: 80px;
+}
+  
+input {
+    border: 1px solid #CC5900;
+    color: #757373;
+}
+  
+input:focus {
+    outline: none;
+    border: 1px solid #FF6F00;
+    background-color: #FF6F00;
+    color: #ffffff;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+  
+input.ng-touched.ng-invalid {
+    border: 2px solid #9F0008;
+}
+
+/* Style submit button */
+button {
+    padding: 10px;
+    border-radius: 6%;
+    width: 100%;
+    color: #ffffff;
+    border: 1px solid #FF6F00;
+    background-color: #FF6F00;
+}
+  
+button:hover {
+    border: 1px solid #14D200;
+    background-color: #14D200;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+  
+button:focus {
+    outline: none;
+    border: 1px solid #10A700;
+    background-color: #10A700;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    background-color: #FF6F00;
+    color: #ffffff;
+    border: none;
+}
+
+/* Style label and help block*/
+label {
+    font-weight: 400;
+}
+  
+.help-block {
+    color: #9F0008;
+}
+  

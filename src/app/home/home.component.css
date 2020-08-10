@@ -1,0 +1,8 @@
+div {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+@media(max-width: 767px) {
+  div { margin-top: 5.5rem; font-size: 90%;}
+}

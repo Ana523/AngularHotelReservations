@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
+    <form>
+      <!--Set search input fields-->
+      <div class="icon-group-1">
+        <input type="text"
+               placeholder="Search First Name"
+               class="form-control"
+               [(ngModel)]="filteredFirstName"
+               [ngModelOptions]="{ standalone: true }"/>
+        <span class="glyphicon glyphicon-search"></span>
+      </div>
+      <div class="icon-group-2">
+        <input type="text"
+               placeholder="Search Last Name"
+               class="form-control"
+               [(ngModel)]="filteredLastName"
+               [ngModelOptions]="{ standalone: true }"/>
+        <span class="glyphicon glyphicon-search"></span>
+      </div>
+      <div class="icon-group-3">
+        <input type="text"
+               placeholder="Search Date From"
+               class="form-control"
+               [(ngModel)]="filteredDateFrom"
+               [ngModelOptions]="{ standalone: true }"/>
+        <span class="glyphicon glyphicon-search"></span>
+      </div>
+      <div class="icon-group-4">
+        <input type="text"
+               placeholder="Search DateTo"
+               class="form-control"
+               [(ngModel)]="filteredDateTo"
+               [ngModelOptions]="{ standalone: true }"
+              />
+        <span class="glyphicon glyphicon-search"></span>
+      </div>
+    </form>
+  </div>
+</div>
+<hr />
+
+<!--Display message to the user-->
+<p class="message" *ngIf="message">{{ message }}</p>
+
+<!--Set dynamic table-->
+<table>
+  <tr>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Date From</th>
+    <th>Date To</th>
+    <th>Number of People</th>
+    <th>Number of Rooms</th>
+    <th>Edit</th>
+    <th>Delete</th>
+  </tr>
+  <ng-container *ngIf="reservations?.length > 0">
+    <tr *ngFor="let reservation of reservations
+      | filter:filteredFirstName:'FirstName'
+      | filter:filteredLastName:'LastName'
+      | filter:filteredDateFrom:'DateFrom'
+      | filter:filteredDateTo:'DateTo' 
+      | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <td style="display: none;">{{ reservation.Id }}</td>
+      <td>{{ reservation.FirstName }}</td>
+      <td>{{ reservation.LastName }}</td>
+      <td>{{ reservation.DateFrom | date:'yyyy-MM-dd' }}</td>
+      <td>{{ reservation.DateTo | date:'yyyy-MM-dd' }}</td>
+      <td>{{ reservation.NumOfPeople }}</td>
+      <td>{{ reservation.NumOfRooms }}</td>
+      <td><button class="edit" (click)="onLoadReservation(reservation.Id)">Edit</button></td>
+      <td><button class="delete" (click)="onDeleteReservation(reservation.Id, reservation.FirstName, reservation.LastName)">Delete</button></td>
+    </tr>
+  </ng-container>
+</table>
+<br>
+<div class="pagination-container" *ngIf="reservations?.length > 0">
+  <pagination-controls class="custom-pagination" (pageChange)="p = $event"></pagination-controls>
+</div>
+  

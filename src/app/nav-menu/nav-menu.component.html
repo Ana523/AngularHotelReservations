@@ -1,0 +1,55 @@
+<nav class='navbar navbar-default'>
+  <div class='container-fluid'>
+    <div class='navbar-header'>
+      <button type='button'
+              class='navbar-toggle'
+              data-toggle='collapse'
+              (click)='toggle()'>
+        <span class='icon-bar' *ngFor="let iconBar of [1, 2, 3]"></span>
+      </button>
+      <a class='navbar-brand' routerLink='/' *ngIf="(loginStatus$ | async)">HotelReservations</a>
+    </div>
+    
+    <div class='collapse navbar-collapse' [class.collapse]="isCollapsed">
+      <ul class='nav navbar-nav navbar-right'>
+        <li routerLinkActive='active'>
+          <a routerLink="/signup" *ngIf="!(loginStatus$ | async)">
+            Sign Up
+          </a>
+        </li>
+        <li routerLinkActive='active'>
+          <a routerLink="/signin" *ngIf="!(loginStatus$ | async)">
+            Sign In
+          </a>
+        </li>
+        <li routerLinkActive='active' *ngIf="(loginStatus$ | async)">
+          <a routerLink='/home'>
+            Home
+          </a>
+        </li>
+        <li routerLinkActive='active'>
+          <a routerLink='/new-reservation' *ngIf="(loginStatus$ | async)">
+            Add new reservation
+          </a>
+        </li>
+        <li routerLinkActive='active' *ngIf="(loginStatus$ | async)">
+          <a routerLink='/search-reservation'>
+            Search reservation
+          </a>
+        </li>
+        <li class="username" *ngIf="(username$ | async) as username">
+          <a>
+            {{ username | uppercase}}
+          </a>
+        </li>
+        <li routerLinkActive='active' *ngIf="(loginStatus$ | async)">
+          <a routerLink="/home" (click)="onLogout()">
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+

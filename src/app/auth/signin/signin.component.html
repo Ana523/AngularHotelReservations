@@ -1,0 +1,33 @@
+<app-alert [message]="message" *ngIf="error" (close)="onHandleResponse()"></app-alert>
+<form class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12"
+      [formGroup]='signInForm'
+      (ngSubmit)="onSubmit()">
+
+  <div class="form-group">
+    <label>User Name</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      formControlName='username' 
+      autocomplete="username" />
+  </div>
+
+  <div class="form-group">
+    <label>Password</label>
+    <input 
+      type="password" 
+      class="form-control" 
+      formControlName='pwd' 
+      autocomplete="current-password" />
+  </div>
+
+  <!--Submit button-->
+  <div class="row">
+   <div class="col-sm-12">
+     <button type="submit" [disabled]="!signInForm.valid">Sign In</button>
+   </div>
+  </div>
+</form>
+
+
+

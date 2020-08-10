@@ -1,0 +1,36 @@
+/* Highlighting rules for nav menu items */
+li a {
+  color: #ffffff;
+  display: block;
+}
+
+li.active a,
+li.active a:hover,
+li.active a:focus {
+  background-color: #10A700;
+  color: white;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Set navigation bar position */
+.navbar-default {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+/* Styling button */
+button {
+  border: none;
+  color: #10A700
+}
+
+/* Style username */
+.username a:hover,
+.username a:focus {
+  background-color: #FF6F00;
+  cursor: default;
+}
+
