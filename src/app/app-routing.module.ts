@@ -9,7 +9,7 @@ import { SigninComponent } from './auth/signin/signin.component';
 import { AuthGuard } from './auth/auth.guard';
 
 const appRoutes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    { path: '', redirectTo: '/signin', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, canActivate:[AuthGuard] },
     { path: 'new-reservation', component: EditComponent, canActivate:[AuthGuard] },
     { path: ':id/edit-reservation', component: EditComponent, canActivate:[AuthGuard] },

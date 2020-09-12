@@ -11,7 +11,7 @@ input {
 input:focus {
   outline: none;
   border: 1px solid #FF6F00;
-  background-color: #FF6F00;
+  background-color: #ff6f00;
   color: #ffffff;
   transition: border-color 0.3s, background-color 0.3s;
 }
@@ -21,18 +21,18 @@ input.ng-touched.ng-invalid {
 }
 
 /* Style buttons */
-.edit, .cancel {
+.edit {
   padding: 10px;
   border-radius: 6%;
   width: 100%;
   color: #ffffff;
 }
 
-.edit:hover, .cancel:hover {
+.edit:hover {
   transition: border-color 0.3s, background-color 0.3s;
 }
 
-.edit:focus, .cancel:focus {
+.edit:focus {
   outline: none;
   transition: border-color 0.3s, background-color 0.3s;
 }
@@ -99,5 +99,48 @@ p {
   border: 1px solid #FFD136;
   border-radius: 2%;
 }
+
+/* Style dropdown */
+.icon-group {
+  position: relative;
+  cursor: pointer;
+}
+
+.icon-group input {
+  cursor: pointer;
+}
+
+.icon-group input:disabled {
+  background-color: #ffffff;
+}
+
+.icon-group input:read-only {
+  background-color: #ffffff;
+}
+
+.icon-group .caret {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+}
+
+.dropdown-menu {
+  width: 100%;
+  background-color: #FF6F00;
+  padding: 0;
+}
+
+li {
+  padding: 5px;
+}
+
+li > a {
+  color: #ffffff; 
+}
+
+li:hover, li > a:hover {
+  background-color: #14D200;
+}
+
 
 

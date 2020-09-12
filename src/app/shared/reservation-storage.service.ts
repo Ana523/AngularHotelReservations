@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Reservation } from './reservation.model';
+import { Reservation } from './reservation.inteface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class ReservationStorageService {
   }
 
   getReservationsFromDb(): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(this.dbUrl + '/GetReservations')
+    return this.http.get<Reservation[]>(this.dbUrl + '/GetReservations');
   }
 
   storeReservation(reservation: Reservation): Observable<Reservation> {

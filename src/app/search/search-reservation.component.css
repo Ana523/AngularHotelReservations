@@ -102,23 +102,22 @@ input:focus::placeholder {
 .icon-group-1,
 .icon-group-2,
 .icon-group-3,
-.icon-group-4 {
+.icon-group-4,
+.icon-group-5 {
   position: relative;
 }
 
 .icon-group-1 .glyphicon,
 .icon-group-2 .glyphicon,
 .icon-group-3 .glyphicon,
-.icon-group-4 .glyphicon {
+.icon-group-4 .glyphicon,
+.icon-group-5 .glyphicon {
   position: absolute;
   top: 13px;
   left: 2px;
   color: #808080;
 }
 
-input:focus + .glyphicon,
-input:focus + .glyphicon,
-input:focus + .glyphicon,
 input:focus + .glyphicon {
   color: #ffffff;
 }
@@ -201,6 +200,13 @@ input:focus + .glyphicon {
   padding: 15px;
   border: 1px solid #FFD136;
   border-radius: 2%;
+}
+
+/* Positioning loading spinner */
+.loading-spinner {
+  position: absolute;
+  margin-top: 48rem;
+  margin-left: 45%;
 }
 
 

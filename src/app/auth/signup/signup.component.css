@@ -58,4 +58,10 @@ label {
 .help-block {
     color: #9F0008;
 }
+
+/* Positioning loading spinner */
+.loading-spinner {
+    margin-top: 100px;
+    text-align: center;
+}
   

@@ -1,7 +1,11 @@
+<div class="loading-spinner"  *ngIf="isLoading">
+  <app-loading-spinner></app-loading-spinner>
+</div>
 <app-alert [message]="message" *ngIf="error" (close)="onHandleResponse()"></app-alert>
 <form class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12"
       [formGroup]='signInForm'
-      (ngSubmit)="onSubmit()">
+      (ngSubmit)="onSubmit()"
+      *ngIf="!isLoading">
 
   <div class="form-group">
     <label>User Name</label>
@@ -10,6 +14,11 @@
       class="form-control" 
       formControlName='username' 
       autocomplete="username" />
+    <!--Validation messages-->
+    <div *ngIf="signInForm.get('username').invalid && (signInForm.get('username').touched || signInForm.get('username').dirty)">
+      <span class="help-block" *ngIf="signInForm.get('username').errors?.required">{{ errMes }}</span>
+      <span class="help-block" *ngIf="signInForm.get('username').errors?.pattern">{{ userNameRegexErr }}</span>
+    </div>
   </div>
 
   <div class="form-group">
@@ -19,6 +28,12 @@
       class="form-control" 
       formControlName='pwd' 
       autocomplete="current-password" />
+    <!--Validation messages-->
+    <div *ngIf="signInForm.get('pwd').invalid && (signInForm.get('pwd').touched || signInForm.get('pwd').dirty)">
+      <span class="help-block" *ngIf="signInForm.get('pwd').errors?.required">{{ errMes }}</span>
+      <span class="help-block" *ngIf="signInForm.get('pwd').errors?.minlength">{{ minLenErrMes }}</span>
+      <span class="help-block" *ngIf="signInForm.get('pwd').errors?.pattern">{{ regexPwd }}</span>
+    </div>
   </div>
 
   <!--Submit button-->

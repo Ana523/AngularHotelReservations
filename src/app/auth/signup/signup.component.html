@@ -1,14 +1,21 @@
+<div class="loading-spinner"  *ngIf="isLoading">
+  <app-loading-spinner></app-loading-spinner>
+</div>
 <app-alert [message]="message" *ngIf="error || success" (close)="onHandleResponse()"></app-alert>
 <form class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12"
       [formGroup]='signUpForm'
-      (ngSubmit)="onSubmit()">
+      (ngSubmit)="onSubmit()"
+      *ngIf="!isLoading">
+
   <div class="form-group">
     <label>Username</label>
     <input type="text" class="form-control" formControlName='username' autocomplete="username"/>
 
-    <!--Validation message-->
-    <span class="help-block"
-          *ngIf="signUpForm.get('username').touched && !signUpForm.get('username').valid">{{ errMes }}</span>
+    <!--Validation messages-->
+    <div *ngIf="signUpForm.get('username').invalid && (signUpForm.get('username').touched || signUpForm.get('username').dirty)">
+      <span class="help-block" *ngIf="signUpForm.get('username').errors?.required">{{ errMes }}</span>
+      <span class="help-block" *ngIf="signUpForm.get('username').errors?.pattern">{{ userNameRegexErr }}</span>
+    </div>
   </div>
 
   <div class="form-group">
@@ -30,7 +37,7 @@
       <!--Validation messages-->
       <div *ngIf="signUpForm.get('email').invalid && (signUpForm.get('email').touched || signUpForm.get('email').dirty)">
         <span class="help-block" *ngIf="signUpForm.get('email').errors?.required">{{ errMes }}</span>
-        <span class="help-block" *ngIf="signUpForm.get('email').errors?.email">{{ emailErrMes }}</span>
+        <span class="help-block" *ngIf="signUpForm.get('email').errors?.pattern">{{ emailRegexErr }}</span>
       </div>
   </div>
 
@@ -43,7 +50,7 @@
         formControlName='pwd' 
         autocomplete="new-password">
 
-        <!--Validation messages-->
+      <!--Validation messages-->
       <div *ngIf="signUpForm.get('passwords.pwd').invalid && (signUpForm.get('passwords.pwd').touched || signUpForm.get('passwords.pwd').dirty)">
         <span class="help-block" *ngIf="signUpForm.get('passwords.pwd').errors?.required">{{ errMes }}</span>
         <span class="help-block" *ngIf="signUpForm.get('passwords.pwd').errors?.minlength">{{ minLenErrMes }}</span>
@@ -62,6 +69,8 @@
       <!--Validation messages-->
       <div *ngIf="signUpForm.get('passwords.repeatPwd').invalid && (signUpForm.get('passwords.repeatPwd').touched || signUpForm.get('passwords.repeatPwd').dirty)">
         <span class="help-block" *ngIf="signUpForm.get('passwords.repeatPwd').errors?.required">{{ errMes }}</span>
+        <span class="help-block" *ngIf="signUpForm.get('passwords.repeatPwd').errors?.minlength">{{ minLenErrMes }}</span>
+        <span class="help-block" *ngIf="signUpForm.get('passwords.repeatPwd').errors?.pattern">{{ regexPwd }}</span>
         <span class="help-block" *ngIf="signUpForm.get('passwords.repeatPwd').errors?.passwordMismatch">{{ pwdMismatchErr }}</span>
       </div>
     </div>

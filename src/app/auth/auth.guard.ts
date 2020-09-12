@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CanActivate } from '@angular/router/src/utils/preactivation';
 
@@ -11,15 +11,19 @@ export class AuthGuard implements CanActivate {
   path: ActivatedRouteSnapshot[];
   route: ActivatedRouteSnapshot;
   
-  constructor(private router: Router) {}
+  constructor() {}
 
   canActivate(
     route: ActivatedRouteSnapshot, 
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (localStorage.getItem('token') != null) {
+
+    const token = localStorage.getItem('token');
+    const expirationTime = localStorage.getItem('tokenExpTime');
+
+    // Check if there is a token and it is not expired
+    if (token != null && Date.parse(expirationTime) > Date.now()) {
       return true;
     } else {
-      this.router.navigate(['signin']);
       return false;
     }
   }

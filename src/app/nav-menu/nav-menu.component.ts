@@ -13,7 +13,7 @@ export class NavMenuComponent implements OnInit {
   // Property defined for updating the navigation bar based on loginStatus
   loginStatus$ : Observable<boolean>;
   username$ : Observable<string>;
-
+  
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
@@ -31,5 +31,6 @@ export class NavMenuComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
+    console.log(localStorage.getItem('token'));
   }
 }

@@ -1,3 +1,4 @@
+<app-alert [message]="message" *ngIf="error" (close)="onHandleResponse()"></app-alert>
 <form class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12"
       [formGroup]='editReservationForm'
       (ngSubmit)="onSubmit()">
@@ -20,57 +21,91 @@
     <span class="help-block"
           *ngIf="editReservationForm.get('lastName').touched && !editReservationForm.get('lastName').valid">{{ errMes }}</span>
   </div>
+  
+  <div formGroupName='dates'>
+    <div class="form-group">
+      <label>Date From</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        formControlName='dateFrom' 
+        placeholder="yyyy-mm-dd" />
+        <!--Validation messages-->
+      <div *ngIf="editReservationForm.get('dates.dateFrom').invalid && (editReservationForm.get('dates.dateFrom').touched || editReservationForm.get('dates.dateFrom').dirty)">
+        <span class="help-block" *ngIf="editReservationForm.get('dates.dateFrom').errors?.required">{{ errMes }}</span>
+        <span class="help-block" *ngIf="editReservationForm.get('dates.dateFrom').errors?.pattern">{{ regexDate }}</span>
+      </div>
 
-  <div class="form-group">
-    <label>Date From</label>
-    <input 
-      type="text" 
-      class="form-control" 
-      formControlName='dateFrom' 
-      placeholder="yyyy-mm-dd" />
+      <!--Error message to be displayed if date from is lower than today's date-->
+      <span class="help-block" *ngIf="!editReservationForm.get('dates.dateFrom').errors?.pattern && editReservationForm.get('dates.dateFrom').errors?.higherThanToday">{{ minDate }}</span>
+    </div>
+  
+    <div class="form-group">
+      <label>Date To</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        formControlName='dateTo' 
+        placeholder="yyyy-mm-dd" />
+        <!--Validation messages-->
+      <div *ngIf="editReservationForm.get('dates.dateTo').invalid && (editReservationForm.get('dates.dateTo').touched || editReservationForm.get('dates.dateTo').dirty)">
+        <span class="help-block" *ngIf="editReservationForm.get('dates.dateTo').errors?.required">{{ errMes }}</span>
+        <span class="help-block" *ngIf="editReservationForm.get('dates.dateTo').errors?.pattern">{{ regexDate }}</span> 
+      </div>
+
+      <!--Error message to be displayed if date to is lower than today's date-->
+      <span class="help-block" *ngIf="!editReservationForm.get('dates.dateTo').errors?.pattern && editReservationForm.get('dates.dateTo').errors?.higherThanToday">{{ minDate }}</span>
+      
+      <!--Error message to be displayed if date from is higher than date to-->
+      <span 
+        class="help-block" 
+        *ngIf="editMode ? (!editReservationForm.get('dates.dateTo').touched && editReservationForm.get('dates.dateTo').errors?.dateFromHigherThanDateTo) || (editReservationForm.get('dates.dateTo').touched && editReservationForm.get('dates.dateTo').errors?.dateFromHigherThanDateTo) : editReservationForm.get('dates.dateTo').errors?.dateFromHigherThanDateTo">
+        {{ dateFromHigherThanDateTo }}
+      </span>
+    </div>
+  </div>
+  
+  <div formGroupName='rooms'>
+    <div class="form-group">
+      <label>Number of People</label>
+      <input type="text" class="form-control" formControlName='numOfPeople' />
       <!--Validation messages-->
-    <div *ngIf="editReservationForm.get('dateFrom').invalid && (editReservationForm.get('dateFrom').touched || editReservationForm.get('dateFrom').dirty)">
-      <span class="help-block" *ngIf="editReservationForm.get('dateFrom').errors?.required">{{ errMes }}</span>
-      <span class="help-block" *ngIf="editReservationForm.get('dateFrom').errors?.pattern">{{ regexDate }}</span>
+      <div *ngIf="editReservationForm.get('rooms.numOfPeople').invalid && (editReservationForm.get('rooms.numOfPeople').touched || editReservationForm.get('rooms.numOfPeople').dirty)">
+        <span class="help-block" *ngIf="editReservationForm.get('rooms.numOfPeople').errors?.required">{{ errMes }}</span>
+        <span class="help-block" *ngIf="editReservationForm.get('rooms.numOfPeople').errors?.pattern">{{ regexErr }}</span>
+      </div>
     </div>
-  </div>
-
-  <div class="form-group">
-    <label>Date To</label>
-    <input 
-      type="text" 
-      class="form-control" 
-      formControlName='dateTo' 
-      placeholder="yyyy-mm-dd" />
-      <!--Validation messages-->
-    <div *ngIf="editReservationForm.get('dateTo').invalid && (editReservationForm.get('dateTo').touched || editReservationForm.get('dateTo').dirty)">
-      <span class="help-block" *ngIf="editReservationForm.get('dateTo').errors?.required">{{ errMes }}</span>
-      <span class="help-block" *ngIf="editReservationForm.get('dateTo').errors?.pattern">{{ regexDate }}</span>
+  
+    <label>Room Type</label>
+    <div class="form-group icon-group" appDropdown>
+      <input type="text" class="form-control" formControlName="roomType" readonly>
+      <span class="caret"></span>
+      <ul class="dropdown-menu">
+        <li (click)="editReservationForm.get('rooms.roomType').setValue('Single room')"><a>Single room</a></li>
+        <li (click)="editReservationForm.get('rooms.roomType').setValue('Double room')"><a>Double room</a></li>
+        <li (click)="editReservationForm.get('rooms.roomType').setValue('Double room with balcony')"><a>Double room with balcony</a></li>
+        <li (click)="editReservationForm.get('rooms.roomType').setValue('Exclusive')"><a>Exclusive</a></li>
+      </ul>
     </div>
-  </div>
-
-  <div class="form-group">
-    <label>Number of People</label>
-    <input type="text" class="form-control" formControlName='numOfPeople' />
-    <!--Validation messages-->
-    <div *ngIf="editReservationForm.get('numOfPeople').invalid && (editReservationForm.get('numOfPeople').touched || editReservationForm.get('numOfPeople').dirty)">
-      <span class="help-block" *ngIf="editReservationForm.get('numOfPeople').errors?.required">{{ errMes }}</span>
-      <span class="help-block" *ngIf="editReservationForm.get('numOfPeople').errors?.pattern">{{ regexErr }}</span>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label>Number of Rooms</label>
-    <input type="text" class="form-control" formControlName='numOfRooms' />
-    <!--Validation messages-->
-    <div *ngIf="editReservationForm.get('numOfRooms').invalid && (editReservationForm.get('numOfRooms').touched || editReservationForm.get('numOfRooms').dirty)">
-      <span class="help-block" *ngIf="editReservationForm.get('numOfRooms').errors?.required">{{ errMes }}</span>
-      <span class="help-block" *ngIf="editReservationForm.get('numOfRooms').errors?.pattern">{{ regexErr }}</span>
-    </div>
+    <span 
+        class="help-block" 
+        *ngIf="editMode ? (!editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinSingleRoom) || (editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinSingleRoom) : editReservationForm.get('rooms.roomType').errors?.numOfPeopleinSingleRoom">
+        {{ numOfPeopleinSingleRoomMes }}
+    </span>
+    <span 
+        class="help-block" 
+        *ngIf="editMode ? (!editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoom) || (editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoom) : editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoom">
+        {{ numOfPeopleinDoubleRoomMes }}
+    </span>
+    <span 
+        class="help-block" 
+        *ngIf="editMode ? (!editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoomwithBalcony) || (editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoomwithBalcony) : editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoomwithBalcony">
+        {{ numOfPeopleinDoubleRoomwithBalconyMes }}
+    </span>
   </div>
   <div class="row">
    <div class="col-sm-12">
-     <button type="submit" class="edit" [disabled]="!editReservationForm.valid">{{ editMode ? 'Update Reservation' : 'Add Reservation' }}</button>
+     <button type="submit" class="edit" [disabled]="!editReservationForm.valid" #editBtn>{{ editMode ? 'Update Reservation' : 'Add Reservation' }}</button>
    </div>
   </div>
 </form>

@@ -15,6 +15,10 @@ input:focus {
     color: #ffffff;
     transition: border-color 0.3s, background-color 0.3s;
 }
+
+input.ng-touched.ng-invalid {
+    border: 2px solid #9F0008;
+}
   
 /* Style submit button */
 button {
@@ -53,5 +57,11 @@ label {
   
   .help-block {
     color: #9F0008;
+}
+
+/* Positioning loading spinner */
+.loading-spinner {
+    margin-top: 100px;
+    text-align: center;
 }
   

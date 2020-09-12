@@ -9,11 +9,14 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { FilterPipe } from './search/filter.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { AlertComponent } from './shared/alert/alert.component';
+import { AuthInterceptor } from './auth/http-interceptor.service';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
+import { DropdownDirective } from './shared/dropdown.directive';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { AlertComponent } from './shared/alert/alert.component';
     FilterPipe,
     SignupComponent,
     SigninComponent,
-    AlertComponent
+    AlertComponent,
+    LoadingSpinnerComponent,
+    DropdownDirective
   ],
   imports: [
     BrowserModule,
@@ -33,9 +38,13 @@ import { AlertComponent } from './shared/alert/alert.component';
     FormsModule,
     HttpClientModule,
     NgxPaginationModule,
-    AppRoutingModule
+    AppRoutingModule 
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

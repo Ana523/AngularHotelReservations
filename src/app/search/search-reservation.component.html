@@ -1,3 +1,7 @@
+<div class="loading-spinner" *ngIf="isLoading">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<app-alert [message]="errMessage" *ngIf="error" (close)="onHandleResponse()"></app-alert>
 <div class="row">
   <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
     <form>
@@ -35,6 +39,15 @@
               />
         <span class="glyphicon glyphicon-search"></span>
       </div>
+      <div class="icon-group-5">
+        <input type="text"
+               placeholder="Search Room Type"
+               class="form-control"
+               [(ngModel)]="filteredRoomType"
+               [ngModelOptions]="{ standalone: true }"
+              />
+        <span class="glyphicon glyphicon-search"></span>
+      </div>
     </form>
   </div>
 </div>
@@ -51,16 +64,17 @@
     <th>Date From</th>
     <th>Date To</th>
     <th>Number of People</th>
-    <th>Number of Rooms</th>
+    <th>Room Type</th>
     <th>Edit</th>
     <th>Delete</th>
   </tr>
-  <ng-container *ngIf="reservations?.length > 0">
+  <ng-container *ngIf="reservations?.length > 0 && !isLoading">
     <tr *ngFor="let reservation of reservations
       | filter:filteredFirstName:'FirstName'
       | filter:filteredLastName:'LastName'
       | filter:filteredDateFrom:'DateFrom'
       | filter:filteredDateTo:'DateTo' 
+      | filter:filteredRoomType:'RoomType'
       | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
       <td style="display: none;">{{ reservation.Id }}</td>
       <td>{{ reservation.FirstName }}</td>
@@ -68,8 +82,8 @@
       <td>{{ reservation.DateFrom | date:'yyyy-MM-dd' }}</td>
       <td>{{ reservation.DateTo | date:'yyyy-MM-dd' }}</td>
       <td>{{ reservation.NumOfPeople }}</td>
-      <td>{{ reservation.NumOfRooms }}</td>
-      <td><button class="edit" (click)="onLoadReservation(reservation.Id)">Edit</button></td>
+      <td>{{ reservation.RoomType }}</td>
+      <td><button class="edit" (click)="onLoadReservation(reservation.Id, reservation.DateFrom, reservation.DateTo, reservation.NumOfPeople, reservation.RoomType)">Edit</button></td>
       <td><button class="delete" (click)="onDeleteReservation(reservation.Id, reservation.FirstName, reservation.LastName)">Delete</button></td>
     </tr>
   </ng-container>

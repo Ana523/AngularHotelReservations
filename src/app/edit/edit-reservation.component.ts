@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Reservation } from '../shared/reservation.model';
+import { Reservation } from '../shared/reservation.inteface';
 import { ReservationStorageService } from '../shared/reservation-storage.service';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit',
@@ -18,23 +19,34 @@ export class EditComponent implements OnInit {
   reservation: Reservation;
   id: number;
   editMode:boolean = false;
+  error = null;
+  private Timer: any;
 
   /*Error messages*/
   errMes = 'This field is required!';
-  regexErr = 'You must insert only numbers from 0 to 99!';
+  regexErr = 'The number of people must be 1-4!';
   regexDate = 'Date must be of a format yyyy-mm-dd!';
+  dateFromHigherThanDateTo = "Date To must be higher than or equal to Date From!";
+  minDate = `Date must be higher than or equal to today's date: ${new Date().toJSON().split(/[T:.Z]/).join(' ').substring(0, 10)}`;
+  numOfPeopleinSingleRoomMes = 'Maximum number of people allowed in single room is 1';
+  numOfPeopleinDoubleRoomMes = 'Maximum number of people allowed in double room is 2';
+  numOfPeopleinDoubleRoomwithBalconyMes = 'Maximum number of people allowed in double room with balcony is 2';
 
+  @ViewChild('editBtn') editBtn: ElementRef;
+  
   constructor(
     private router: Router, 
     private reservationStorageService: ReservationStorageService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
-    // Retrieve Id
+    // Retrieve Id and Number of Rooms
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       this.editMode = params['id'] != null;
     });
+    
     // Initialize form
     this.initFormToAddOrEdit();
   }
@@ -55,23 +67,38 @@ export class EditComponent implements OnInit {
         const transformedDateTo = (reservation.DateTo).toString().substring(0, 10);
 
         // Prepopulate form with values from the database
-        this.editReservationForm.controls['firstName'].setValue(reservation.FirstName);  
-        this.editReservationForm.controls['lastName'].setValue(reservation.LastName);  
-        this.editReservationForm.controls['dateFrom'].setValue(transformedDateFrom);  
-        this.editReservationForm.controls['dateTo'].setValue(transformedDateTo); 
-        this.editReservationForm.controls['numOfRooms'].setValue(reservation.NumOfRooms);
-        this.editReservationForm.controls['numOfPeople'].setValue(reservation.NumOfPeople); 
+        (<FormControl>this.editReservationForm.controls['firstName']).setValue(reservation.FirstName, { onlySelf: true, emitEvent: false }); 
+        (<FormControl>this.editReservationForm.controls['lastName']).setValue(reservation.LastName, { onlySelf: true, emitEvent: false });  
+        (<FormControl>this.editReservationForm.get('dates.dateFrom')).setValue(transformedDateFrom, { emitEvent: false });  
+        (<FormControl>this.editReservationForm.get('dates.dateTo')).setValue(transformedDateTo, { emitEvent: false });  
+        (<FormControl>this.editReservationForm.get('rooms.numOfPeople')).setValue(reservation.NumOfPeople, { onlySelf: true, emitEvent: false }); 
+        (<FormControl>this.editReservationForm.get('rooms.roomType')).setValue(reservation.RoomType, { onlySelf: true, emitEvent: false });
+      })
+
+      this.subscription = this.editReservationForm.valueChanges.pipe(take(1)).subscribe(valueChanged => {
+        if (valueChanged) {
+          this.editReservationForm.updateValueAndValidity();
+        } else {
+          this.editBtn.nativeElement.disabled = true;
+        }
       })
     }
   };
 
   onSubmit() {
-    const reservation = this.editReservationForm.value;
-
+    const firstName = this.editReservationForm.value.firstName;
+    const lastName = this.editReservationForm.value.lastName;
+    const dateFrom = (this.editReservationForm.controls['dates'].value).dateFrom;
+    const dateTo = (this.editReservationForm.controls['dates'].value).dateTo;
+    const roomType = (this.editReservationForm.controls['rooms'].value).roomType;
+    const numOfPeople = (this.editReservationForm.controls['rooms'].value).numOfPeople;
+    
     // Store person in a database 
-    this.createReservation(reservation);
-    this.editReservationForm.reset();
-    setTimeout(() => this.router.navigate(['search-reservation']), 3000);
+    if (this.id) {
+      this.createReservation({ Id: this.id, FirstName : firstName, LastName : lastName, DateFrom : dateFrom, DateTo : dateTo, RoomType : roomType, NumOfPeople : numOfPeople });
+    } else {
+      this.createReservation({ FirstName : firstName, LastName : lastName, DateFrom : dateFrom, DateTo : dateTo, RoomType : roomType, NumOfPeople : numOfPeople });
+    } 
   }
 
   /* Function for adding new user or updating an existing user */
@@ -80,16 +107,48 @@ export class EditComponent implements OnInit {
       this.subscription = this.reservationStorageService.storeReservation(reservation).subscribe((reservation) => {
         this.dataSaved = true;
         this.message = "Reservation for " + reservation.FirstName + " " + reservation.LastName + " added successfully !";
-      }, error => console.log(error));
-    } else {
-      reservation.Id = this.id;
-      if (confirm('Are you sure you want to change this reservation ?')) {
+        this.editReservationForm.reset(); 
+        this.Timer = setTimeout(() => this.router.navigate(['search-reservation']), 3000);
+      }, err => {
+        this.error = err;
+        if (err.status === 422) {
+          this.message = err.error.message;
+        } else if (err.status === 400) {
+          this.message = `The request you sent to the server is not valid`;
+        } else {
+          this.message = `Some error occured: ${err.message}`;
+        }
+        console.log(err) 
+        this.Timer = setTimeout(() => this.error = null, 10000); }
+    )} else {
+      if (confirm('Are you sure you want to change this reservation ?')) { 
+        reservation.Id = this.id;
+        
         this.subscription = this.reservationStorageService.editReservation(reservation).subscribe((reservation) => {
-          this.dataSaved = true;
-          this.message = "Reservation for " + reservation.FirstName + " " + reservation.LastName + " updated successfully !";
-        }), error => console.log(error);
-      }
+            this.dataSaved = true;
+            this.message = "Reservation for " + reservation.FirstName + " " + reservation.LastName + " updated successfully !"; 
+            this.editReservationForm.reset(); 
+            this.Timer = setTimeout(() => this.router.navigate(['search-reservation']), 3000);
+          }, err => {
+            this.error = err;
+            if (err.status === 422) {
+              this.message = err.error.message;
+            } else if (err.status === 400) {
+              this.message = `The request you sent to the server is not valid`;
+            } else if (err.status === 404) {
+              this.message = `Reservation with id = ${reservation.Id} NOT FOUND`;
+            } else {
+              this.message = `Some error occured: ${err.message}`;
+            }
+            console.log(err) 
+            this.Timer = setTimeout(() => this.error = null, 10000); }
+      )};
     }
+  }
+
+  onHandleResponse() {
+    this.error = null;
+    clearTimeout(this.Timer);
   }
 
   ngOnDestroy() {
@@ -100,17 +159,58 @@ export class EditComponent implements OnInit {
 
   /* Function for initializing form */
   private initForm() {
-    this.editReservationForm = new FormGroup({
-      firstName: new FormControl(null, Validators.required),
-      lastName: new FormControl(null, Validators.required),
-      dateFrom: new FormControl(null, [Validators.required,
-                                       Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/)]),
-      dateTo: new FormControl(null, [Validators.required,
-                                     Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/)]),
-      numOfPeople: new FormControl(null, [Validators.required,
-                                          Validators.pattern(/^[0-9]{1,2}$/)]),
-      numOfRooms: new FormControl(null, [Validators.required, 
-                                         Validators.pattern(/^[0-9]{1,2}$/)])
-    })
+    this.editReservationForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      dates: this.fb.group({
+        dateFrom: ['', [Validators.required, 
+                        Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/), this.validateDate]],
+        dateTo: ['', [Validators.required, 
+                      Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/), this.validateDate]],
+      }, { validator : this.compareDates }),
+      rooms: this.fb.group({
+        numOfPeople: ['', [Validators.required,
+                           Validators.pattern(/^[1-4]$/)]],
+        roomType: ['Double room']
+      }, { validator : this.numOfPeopleinRoom })
+    });
+  }
+
+  /* Function for comparing dates */
+  private compareDates(fb: FormGroup) {
+    let dateFromCtrl = fb.get('dateFrom');
+    let dateToCtrl = fb.get('dateTo');
+
+    if (dateToCtrl.errors == null || 'dateFromHigherThanDateTo' in dateToCtrl.errors) {
+      if (dateFromCtrl.value > dateToCtrl.value) {
+        dateToCtrl.setErrors({ dateFromHigherThanDateTo: true })
+      } else {
+        dateToCtrl.setErrors(null);
+      } 
+    }
   };
+
+  /* Function for testing the number of people allowed in a particular room type */
+  private numOfPeopleinRoom(fb: FormGroup) {
+    let numOfPeopleCtrl = fb.get('numOfPeople');
+    let roomTypeCtrl = fb.get('roomType');
+
+    if (numOfPeopleCtrl.errors == null && roomTypeCtrl.value == 'Single room' && numOfPeopleCtrl.value > 1) {        
+      roomTypeCtrl.setErrors({ numOfPeopleinSingleRoom : true });
+    } else if (numOfPeopleCtrl.errors == null && roomTypeCtrl.value == 'Double room' && numOfPeopleCtrl.value > 2) {
+      roomTypeCtrl.setErrors({ numOfPeopleinDoubleRoom : true });
+    } else if (numOfPeopleCtrl.errors == null && roomTypeCtrl.value == 'Double room with balcony' && numOfPeopleCtrl.value > 2) {
+      roomTypeCtrl.setErrors({ numOfPeopleinDoubleRoomwithBalcony : true });
+    } else {
+      roomTypeCtrl.setErrors(null);
+    }
+  }
+  
+  /* Function for comparing Date From and Date To to Today's Date */
+  private validateDate(control: FormControl): { [key: string]: any } | null {
+      if (Date.parse(control.value) < Date.parse(new Date().toJSON().split(/[T:.Z]/).join(' ').substring(0, 10))) {
+        return { 'higherThanToday': true }
+      }
+      return null;
+  }
 }
