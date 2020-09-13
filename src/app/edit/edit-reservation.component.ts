@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Reservation } from '../shared/reservation.inteface';
 import { ReservationStorageService } from '../shared/reservation-storage.service';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit-reservation.component.html',
   styleUrls: ['./edit-reservation.component.css']
 })
-export class EditComponent implements OnInit {
+
+export class EditComponent implements OnInit, OnDestroy {
   editReservationForm: FormGroup;
   subscription: Subscription;
   message: string = null;
@@ -22,7 +22,7 @@ export class EditComponent implements OnInit {
   error = null;
   private Timer: any;
 
-  /*Error messages*/
+  /* Error messages */
   errMes = 'This field is required!';
   regexErr = 'The number of people must be 1-4!';
   regexDate = 'Date must be of a format yyyy-mm-dd!';
@@ -31,8 +31,6 @@ export class EditComponent implements OnInit {
   numOfPeopleinSingleRoomMes = 'Maximum number of people allowed in single room is 1';
   numOfPeopleinDoubleRoomMes = 'Maximum number of people allowed in double room is 2';
   numOfPeopleinDoubleRoomwithBalconyMes = 'Maximum number of people allowed in double room with balcony is 2';
-
-  @ViewChild('editBtn') editBtn: ElementRef;
   
   constructor(
     private router: Router, 
@@ -41,7 +39,7 @@ export class EditComponent implements OnInit {
     private fb: FormBuilder) { }
 
   ngOnInit() {
-    // Retrieve Id and Number of Rooms
+    // Retrieve Id from Url
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       this.editMode = params['id'] != null;
@@ -58,29 +56,21 @@ export class EditComponent implements OnInit {
     } else {
       // Initialize form in edit mode and populate it with values for a particular reservation
       this.initForm();
-
-      this.reservationStorageService.getReservationById(this.id).subscribe(reservation => {
+      
+      this.subscription = this.reservationStorageService.getReservationById(this.id).subscribe(reservation => {
         this.id = reservation.Id;
-
+        
         // Transform date values so that they don't include time
         const transformedDateFrom = (reservation.DateFrom).toString().substring(0, 10);
         const transformedDateTo = (reservation.DateTo).toString().substring(0, 10);
-
+        
         // Prepopulate form with values from the database
-        (<FormControl>this.editReservationForm.controls['firstName']).setValue(reservation.FirstName, { onlySelf: true, emitEvent: false }); 
-        (<FormControl>this.editReservationForm.controls['lastName']).setValue(reservation.LastName, { onlySelf: true, emitEvent: false });  
-        (<FormControl>this.editReservationForm.get('dates.dateFrom')).setValue(transformedDateFrom, { emitEvent: false });  
-        (<FormControl>this.editReservationForm.get('dates.dateTo')).setValue(transformedDateTo, { emitEvent: false });  
-        (<FormControl>this.editReservationForm.get('rooms.numOfPeople')).setValue(reservation.NumOfPeople, { onlySelf: true, emitEvent: false }); 
-        (<FormControl>this.editReservationForm.get('rooms.roomType')).setValue(reservation.RoomType, { onlySelf: true, emitEvent: false });
-      })
-
-      this.subscription = this.editReservationForm.valueChanges.pipe(take(1)).subscribe(valueChanged => {
-        if (valueChanged) {
-          this.editReservationForm.updateValueAndValidity();
-        } else {
-          this.editBtn.nativeElement.disabled = true;
-        }
+        (<FormControl>this.editReservationForm.controls['firstName']).setValue(reservation.FirstName); 
+        (<FormControl>this.editReservationForm.controls['lastName']).setValue(reservation.LastName);     
+        (<FormControl>this.editReservationForm.get('dates.dateFrom')).setValue(transformedDateFrom);  
+        (<FormControl>this.editReservationForm.get('dates.dateTo')).setValue(transformedDateTo);  
+        (<FormControl>this.editReservationForm.get('rooms.numOfPeople')).setValue(reservation.NumOfPeople); 
+        (<FormControl>this.editReservationForm.get('rooms.roomType')).setValue(reservation.RoomType);  
       })
     }
   };
@@ -157,16 +147,18 @@ export class EditComponent implements OnInit {
     }
   }
 
-  /* Function for initializing form */
+  /* Function for initializing the form */
   private initForm() {
     this.editReservationForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       dates: this.fb.group({
         dateFrom: ['', [Validators.required, 
-                        Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/), this.validateDate]],
+                        Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/), 
+                        this.validateDate]],
         dateTo: ['', [Validators.required, 
-                      Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/), this.validateDate]],
+                      Validators.pattern(/^[0-9]{4}[-](0[0-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])$/), 
+                      this.validateDate]],
       }, { validator : this.compareDates }),
       rooms: this.fb.group({
         numOfPeople: ['', [Validators.required,

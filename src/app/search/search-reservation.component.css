@@ -74,7 +74,7 @@ th, td {
   td:nth-of-type(4):before { content: "Date From" }
   td:nth-of-type(5):before { content: "Date To" }
   td:nth-of-type(6):before { content: "Number of People" }
-  td:nth-of-type(7):before { content: "Number of Rooms" }
+  td:nth-of-type(7):before { content: "Room Type" }
   td:nth-of-type(8):before { content: "Edit" }
   td:nth-of-type(9):before { content: "Delete" }
 }
@@ -202,7 +202,7 @@ input:focus + .glyphicon {
   border-radius: 2%;
 }
 
-/* Positioning loading spinner */
+/* Position loading spinner */
 .loading-spinner {
   position: absolute;
   margin-top: 48rem;

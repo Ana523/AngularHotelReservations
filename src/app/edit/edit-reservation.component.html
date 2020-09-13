@@ -76,8 +76,8 @@
       </div>
     </div>
   
-    <label>Room Type</label>
     <div class="form-group icon-group" appDropdown>
+      <label>Room Type</label>
       <input type="text" class="form-control" formControlName="roomType" readonly>
       <span class="caret"></span>
       <ul class="dropdown-menu">
@@ -86,26 +86,26 @@
         <li (click)="editReservationForm.get('rooms.roomType').setValue('Double room with balcony')"><a>Double room with balcony</a></li>
         <li (click)="editReservationForm.get('rooms.roomType').setValue('Exclusive')"><a>Exclusive</a></li>
       </ul>
-    </div>
-    <span 
+      <span 
         class="help-block" 
         *ngIf="editMode ? (!editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinSingleRoom) || (editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinSingleRoom) : editReservationForm.get('rooms.roomType').errors?.numOfPeopleinSingleRoom">
         {{ numOfPeopleinSingleRoomMes }}
-    </span>
-    <span 
+      </span>
+      <span 
         class="help-block" 
         *ngIf="editMode ? (!editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoom) || (editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoom) : editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoom">
         {{ numOfPeopleinDoubleRoomMes }}
-    </span>
-    <span 
+      </span>
+      <span 
         class="help-block" 
         *ngIf="editMode ? (!editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoomwithBalcony) || (editReservationForm.get('rooms.roomType').touched && editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoomwithBalcony) : editReservationForm.get('rooms.roomType').errors?.numOfPeopleinDoubleRoomwithBalcony">
         {{ numOfPeopleinDoubleRoomwithBalconyMes }}
-    </span>
+      </span>
+    </div>
   </div>
   <div class="row">
    <div class="col-sm-12">
-     <button type="submit" class="edit" [disabled]="!editReservationForm.valid" #editBtn>{{ editMode ? 'Update Reservation' : 'Add Reservation' }}</button>
+     <button type="submit" class="edit" [disabled]="!editReservationForm.valid">{{ editMode ? 'Update Reservation' : 'Add Reservation' }}</button>
    </div>
   </div>
 </form>
